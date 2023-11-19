@@ -1,0 +1,43 @@
+/* LandingPage.css */
+.landing-page {
+    text-align: center;
+  }
+  
+  header {
+    padding: 20px;
+    background-color: #f2f2f2;
+  }
+  
+  main {
+    padding: 20px;
+  }
+  
+  section {
+    margin-bottom: 20px;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  input {
+    padding: 10px;
+    margin-bottom: 10px;
+    width: 300px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  footer {
+    padding: 20px;
+    background-color: #f2f2f2;
+  }
+  

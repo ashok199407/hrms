@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  # nginx server config
+  hrms:
+    image: mynginx
+    ports:
+      - "80:80"
+  # Django Application
+  web:
+    image: myimage
+    #command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=NewServerrrrrr
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=uuuu1111
+      - EMAIL_HOST_PASSWORD=72A1E73834FF483792ED9D18912D7E32BB85
+      - EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+      - EMAIL_HOST=smtp.elasticemail.com
+      - EMAIL_PORT=2525
+      - EMAIL_USE_TLS=True
+      - EMAIL_USE_SSL=False
+      - DEFAULT_FROM_EMAIL=hrms.marolix@gmail.com
+      - EMAIL_HOST_USER=hrms.marolix@gmail.com
+
+  # PostgreSQL Database
+  db:
+    image: postgres:12
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: NewServerrrrrr
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: uuuu1111
+volumes:
+  postgres_data:
