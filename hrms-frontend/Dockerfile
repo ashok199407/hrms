@@ -1,5 +1,5 @@
 # Use the official Node.js image as the base image
-FROM node:18-alpine
+FROM node:18 As builder
 
 # Set the working directory inside the container
 WORKDIR /usr/src/app
@@ -13,11 +13,15 @@ COPY package*.json ./
 # Install project dependencies
 #RUN npm install filepond
 RUN npm install
-#RUN npm audit fix --force 
-#RUN npm fund
-# Copy the entire project to the container
-COPY . .
+#RUN npm audit fix --force
+# Stage-2 
+FROM node:18-slim AS runtime 
 
+#copy packages
+COPY --from=builder /usr/src/app/node_modules/ /usr/src/app/node_modules/
+
+#copy entaire code
+COPY . .
 # Expose the port that the Angular app will run on
 EXPOSE 4200
 
