@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hrms
+  labels:
+    name: hrms-web
+    tier: app 
+    env: dev
+namespace: dev
+spec:
+  selector:
+    matchLabels:
+      name: hrms-web
+      tier: app
+      env: dev
+    metadata:
+      template:
+        labels:
+          name: hrms-web
+          tier: app
+          env: dev
+      containers:
+      - name: hrms-web
+        image: ashokdock/hrms_web:v1
+        resources:
+          request:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8000
+        readinessProbe:
+          tcpSocket:
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        livenessprobe:
+          tcpSocket:
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 10
+

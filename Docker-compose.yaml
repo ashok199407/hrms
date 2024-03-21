@@ -1,14 +1,14 @@
 version: '3'
-
 services:
-  # nginx server config
-  hrms:
-    image: mynginx
+  frontend:
+    image: app-tier
     ports:
-      - "80:80"
+      - "4200:4200"
+    depends_on:
+      - api
   # Django Application
-  web:
-    image: myimage
+  api:
+    image: api_tier
     #command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
