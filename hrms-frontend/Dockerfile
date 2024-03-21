@@ -1,24 +1,32 @@
-# Use the official Node.js image as the base image
-FROM node:18-alpine
+# Stage 1: Build the Node.js application
+FROM node:18-slim AS build
 
 # Set the working directory inside the container
 WORKDIR /usr/src/app
-
-# Install Angular CLI globally with the specified version
-RUN npm install -g @angular/cli@latest
 
 # Copy package.json and package-lock.json to leverage Docker cache
 COPY package*.json ./
 
 # Install project dependencies
-#RUN npm install filepond
-RUN npm install
-#RUN npm audit fix --force
+RUN npm install --only=production
+
+# Copy the entire project to the container
 COPY . .
-# Expose the port that the Angular app will run on
-EXPOSE 4200
 
-# Start the Angular application
-CMD ["ng", "serve", "--host", "0.0.0.0"]
+# Build the Node.js application (if needed)
+# RUN npm run build
 
+# Stage 2: Create a lightweight runtime environment
+FROM node:18-slim AS runtime
 
+# Set the working directory inside the container
+WORKDIR /usr/src/app
+
+# Copy built Node.js application from the build stage
+COPY --from=build /usr/src/app .
+
+# Expose port (if applicable)
+# EXPOSE 3000
+
+# Command to start the application
+CMD ["node", "app.js"]
