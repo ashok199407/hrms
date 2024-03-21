@@ -32,6 +32,6 @@ COPY --from=build /usr/src/app/dist/ /usr/src/app/dist/
 EXPOSE 4200
 
 # Start the Angular application
-CMD ["ng", "serve", "--host", "0.0.0.0"]
+CMD ["npx", "http-server", "dist", "-p", "4200"]
 
 
