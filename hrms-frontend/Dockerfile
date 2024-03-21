@@ -1,5 +1,5 @@
 # Stage 1: Build Angular application
-FROM node:18-alpine AS build
+FROM node:18 AS build
 
 # Set the working directory inside the container
 WORKDIR /usr/src/app
@@ -17,21 +17,18 @@ RUN npm install
 COPY . .
 
 # Build the Angular application
-RUN ng build 
+RUN ng build --prod
 
 # Stage 2: Serve Angular application
-FROM node:18-alpine AS serve
+FROM nginx:latest
 
-# Set the working directory inside the container
-WORKDIR /usr/src/app
+RUN rm -rvf /usr/share/nginx/html/*
 
 # Copy built Angular app from previous stage
-COPY --from=build /usr/src/app/dist/ /usr/src/app/dist/
+COPY --from=build /usr/src/app/dist/ /usr/share/nginx/html
 
-# Expose port 4200 to serve the Angular app
-EXPOSE 4200
+# Expose port 80 to serve the Angular app
+EXPOSE 80
 
-# Start the Angular application
-CMD ["npx", "http-server", "dist", "0.0.0.0", "-p", "4200"]
-
-
+# Start Nginx to serve the Angular app
+CMD ["nginx", "-g", "daemon off;"]
