@@ -1,5 +1,5 @@
-# Use the official Node.js image as the base image
-FROM node:18
+# Stage 1: Build Angular application
+FROM node:18 AS build
 
 # Set the working directory inside the container
 WORKDIR /usr/src/app
@@ -11,16 +11,22 @@ RUN npm install -g @angular/cli@latest
 COPY package*.json ./
 
 # Install project dependencies
-#RUN npm install filepond
 RUN npm install
-#RUN npm audit fix --force 
-#RUN npm fund
+
 # Copy the entire project to the container
 COPY . .
 
-# Expose the port that the Angular app will run on
-EXPOSE 4200
+# Build the Angular application
+RUN ng build --prod
 
-# Start the Angular application
-CMD ["ng", "serve", "--host", "0.0.0.0"]
+# Stage 2: Serve Angular application
+FROM nginx:latest
 
+# Copy built Angular app from previous stage
+COPY --from=build /usr/src/app/dist/ /usr/share/nginx/html
+
+# Expose port 80 to serve the Angular app
+EXPOSE 80
+
+# Start Nginx to serve the Angular app
+CMD ["nginx", "-g", "daemon off;"]
