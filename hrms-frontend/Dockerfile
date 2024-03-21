@@ -26,7 +26,9 @@ WORKDIR /usr/src/app
 COPY --from=build /usr/src/app .
 
 # Expose port (if applicable)
-# EXPOSE 3000
+EXPOSE 3000
 
 # Command to start the application
-CMD ["node", "app.js"]
+CMD ["ng", "serve", "--host", "0.0.0.0"]
+
+
