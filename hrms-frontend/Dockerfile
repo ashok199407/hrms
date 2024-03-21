@@ -7,6 +7,8 @@ WORKDIR /usr/src/app
 # Copy package.json and package-lock.json to leverage Docker cache
 COPY package*.json ./
 
+RUN npm install -g @angular/cli@latest
+
 # Install project dependencies
 RUN npm install --only=production
 
@@ -26,9 +28,14 @@ WORKDIR /usr/src/app
 COPY --from=build /usr/src/app .
 
 # Expose port (if applicable)
-EXPOSE 3000
+EXPOSE 4200
 
 # Command to start the application
 CMD ["ng", "serve", "--host", "0.0.0.0"]
 
 
+
+
+# Install Angular CLI globally with the specified version
+
+# Start the Angular application
