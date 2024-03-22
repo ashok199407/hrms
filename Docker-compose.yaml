@@ -12,7 +12,7 @@ services:
       - mynetwork
   # Django Application
   api:
-    image: ahokdockcloud/angjs:v1
+    image: ashokdockcloud/angjs:v1
     #command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
