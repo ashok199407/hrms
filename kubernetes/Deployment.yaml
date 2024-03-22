@@ -1,27 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hrms
-  labels:
+  name: hrms-web-deployment
+  labels: #these lables are deployment lables
     name: hrms-web
     tier: app 
     env: dev
 namespace: dev
 spec:
+  replicas: 3
   selector:
-    matchLabels:
+    matchLabels: # these lable are used find pod. it should match with pod lables
       name: hrms-web
       tier: app
       env: dev
+  template:
     metadata:
-      template:
-        labels:
-          name: hrms-web
-          tier: app
-          env: dev
+      labels: # these lables are pod lables
+        name: hrms-web
+        tier: app
+        env: dev
       containers:
       - name: hrms-web
         image: ashokdock/hrms_web:v1
+        imagePullPolicy: always
         resources:
           request:
             memory: "64Mi"
@@ -30,15 +32,52 @@ spec:
             memory: "128Mi"
             cpu: "500m"
         ports:
-        - containerPort: 8000
+        - containerPort: 4200
         readinessProbe:
           tcpSocket:
-            port: 8000
+            port: 4200
           initialDelaySeconds: 15
           periodSeconds: 10
         livenessprobe:
           tcpSocket:
-            port: 8000
+            port: 4200
           initialDelaySeconds: 15
           periodSeconds: 10
-
+        env:
+        - name: API_URL
+          value: "http://hrm-api-service:8000" 
+        volumeMounts:
+          - mountPath: "/data"
+            name: my-volume
+      volumes:
+        - name: my-volume
+          persistantVolumeClaim:
+            claimName: hrms-web-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hrms-service
+spec:
+  type: LoadBalancer
+  selector:
+    name: hrms-web
+    tier: app
+    env: dev
+  ports:
+  - port: 8000 
+    targetPort: 8000 # container port
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hrms-web-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: ebs-sc
+---

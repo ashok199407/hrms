@@ -1,14 +1,18 @@
 version: '3'
+networks:
+  mynetwork:
 services:
   frontend:
-    image: app-tier
+    image: ahokdockcloud/django_api:v1
     ports:
       - "4200:4200"
     depends_on:
       - api
+    networks:
+      - mynetwork
   # Django Application
   api:
-    image: api_tier
+    image: ahokdockcloud/angjs:v1
     #command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
@@ -28,6 +32,8 @@ services:
       - EMAIL_USE_SSL=False
       - DEFAULT_FROM_EMAIL=hrms.marolix@gmail.com
       - EMAIL_HOST_USER=hrms.marolix@gmail.com
+    networks:
+      - mynetwork
 
   # PostgreSQL Database
   db:
@@ -38,5 +44,7 @@ services:
       POSTGRES_DB: NewServerrrrrr
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: uuuu1111
+    networks:
+      - mynetwork
 volumes:
   postgres_data:
